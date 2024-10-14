@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App - Take Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: #f0f0f0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        .question {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        button {
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="quizTitle"></h1>
+    <div id="questionContainer" class="question">
+        <h2 id="questionText"></h2>
+        <div id="options" class="options"></div>
+    </div>
+    <div id="result"></div>
+
+    <script>
+        const quizTitle = document.getElementById('quizTitle');
+        const questionText = document.getElementById('questionText');
+        const options = document.getElementById('options');
+        const result = document.getElementById('result');
+
+        let currentQuiz;
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+
+        // Check if user is logged in
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'index.html';
+        }
+
+        // Get quiz ID from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('id');
+
+        // Fetch quiz data
+        async function fetchQuiz() {
+            try {
+                const response = await fetch(`https://safety-fad7.onrender.com/getquiz/${quizId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch quiz');
+                }
+
+                currentQuiz = await response.json();
+                quizTitle.textContent = currentQuiz.title;
+                displayQuestion();
+            } catch (error) {
+                console.error('Error:', error);
+                quizTitle.textContent = 'Failed to load quiz. Please try again later.';
+            }
+        }
+
+        function displayQuestion() {
+            const question = currentQuiz.questions[currentQuestionIndex];
+            questionText.textContent = `Question ${currentQuestionIndex + 1}: ${question.questionText}`;
+            options.innerHTML = '';
+
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.addEventListener('click', () => handleAnswer(option));
+                options.appendChild(button);
+            });
+        }
+
+        function handleAnswer(answer) {
+            userAnswers.push(answer);
+
+            if (currentQuestionIndex + 1 < currentQuiz.questions.length) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        async function showResult() {
+            const score = userAnswers.filter((answer, index) => 
+                answer === currentQuiz.questions[index].correctAnswer
+            ).length;
+
+            const resultText = `You scored ${score} out of ${currentQuiz.questions.length}!`;
+            result.textContent = resultText;
+
+            // Hide question container
+            document.getElementById('questionContainer').style.display = 'none';
+
+            // Send score to backend
+            try {
+                const response = await fetch('https://safety-fad7.onrender.com/updateScore', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ score })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update score');
+                }
+            } catch (error) {
+                console.error('Error updating score:', error);
+            }
+
+            // Add buttons to return to quiz list or view leaderboard
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'button-container';
+
+            const returnButton = document.createElement('button');
+            returnButton.textContent = 'Back to Quiz List';
+            returnButton.addEventListener('click', () => {
+                window.location.href = 'quiz-list.html';
+            });
+
+            const leaderboardButton = document.createElement('button');
+            leaderboardButton.textContent = 'View Leaderboard';
+            leaderboardButton.addEventListener('click', () => {
+                window.location.href = 'leaderboard.html';
+            });
+
+            buttonContainer.appendChild(returnButton);
+            buttonContainer.appendChild(leaderboardButton);
+            result.appendChild(buttonContainer);
+        }
+
+
+        fetchQuiz();
+    </script>
+</body>
+</html>
