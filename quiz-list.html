@@ -6,59 +6,76 @@
     <title>Quiz App - Quiz List</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 2rem;
             background-color: #f0f0f0;
+            color: #333;
         }
         h1 {
             text-align: center;
-            color: #333;
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
         }
-        ul {
-            list-style-type: none;
+        #quizList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
             padding: 0;
         }
-        li {
+        .quiz-item {
             background-color: white;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
-        a {
+        .quiz-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .quiz-item a {
+            display: block;
+            padding: 1.5rem;
             text-decoration: none;
-            color: #007bff;
+            color: #34495e;
         }
-        a:hover {
-            text-decoration: underline;
+        .quiz-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .quiz-category {
+            font-size: 0.9rem;
+            color: #7f8c8d;
         }
         .logout {
             position: absolute;
             top: 1rem;
             right: 1rem;
             padding: 0.5rem 1rem;
-            background-color: #dc3545;
+            background-color: #e74c3c;
             color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
         .logout:hover {
-            background-color: #c82333;
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
     <button class="logout" id="logoutBtn">Logout</button>
     <h1>Available Quizzes</h1>
-    <ul id="quizList"></ul>
+    <div id="quizList"></div>
 
     <script>
         const quizList = document.getElementById('quizList');
         const logoutBtn = document.getElementById('logoutBtn');
-        const leaderboardBtn = document.getElementById('leaderboardBtn');
 
         // Check if user is logged in
         const token = localStorage.getItem('token');
@@ -81,25 +98,28 @@
 
                 const quizzes = await response.json();
                 quizzes.forEach(quiz => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `<a href="quiz.html?id=${quiz._id}">${quiz.title}</a> - ${quiz.category || 'No category'}`;
-                    quizList.appendChild(li);
+                    const quizItem = document.createElement('div');
+                    quizItem.className = 'quiz-item';
+                    quizItem.innerHTML = `
+                        <a href="quiz.html?id=${quiz._id}">
+                            <div class="quiz-title">${quiz.title}</div>
+                            <div class="quiz-category">${quiz.category || 'No category'}</div>
+                        </a>
+                    `;
+                    quizList.appendChild(quizItem);
                 });
             } catch (error) {
                 console.error('Error:', error);
-                quizList.innerHTML = '<li>Failed to load quizzes. Please try again later.</li>';
+                quizList.innerHTML = '<div class="quiz-item"><div class="quiz-title">Failed to load quizzes. Please try again later.</div></div>';
             }
         }
 
         fetchQuizzes();
-        leaderboardBtn.addEventListener('click', () => {
-            window.location.href = 'leaderboard.html';
-        });
 
         // Logout functionality
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('token');
-            window.location.href = 'login.html';
+            window.location.href = 'index.html';
         });
     </script>
 </body>

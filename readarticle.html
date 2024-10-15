@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read Articles on Safety</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f7f7;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #003366; /* Dark Tranos Blue */
+            color: white;
+        }
+
+        .logo img {
+            height: 50px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 600;
+        }
+
+        .welcome-message {
+            text-align: center;
+            background: linear-gradient(135deg, #003366, #ff6600); /* Tranos Blue to Orange */
+            color: white;
+            padding: 40px 20px;
+            animation: fadeIn 1s ease-out, moveDown 1s ease-out;
+        }
+
+        .welcome-message h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .article-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 40px 20px;
+        }
+
+        .article-box {
+            padding: 20px;
+            background-color: #ffffff;
+            border: 2px solid #003366; /* Tranos Blue */
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        .article-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.2);
+        }
+
+        .article-box a {
+            text-decoration: none;
+            color: #003366; /* Tranos Blue */
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: block;
+            margin-top: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .article-box a:hover {
+            color: #ff6600; /* Tranos Orange */
+        }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            background-color: #003366;
+            color: white;
+            padding: 20px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes moveDown {
+            from {
+                transform: translateY(-50px);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <img src="Tran.png" alt="Company Logo">
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="login.html">Login</a>
+            <a href="register.html">Register</a>
+        </nav>
+    </header>
+
+    <section class="welcome-message">
+        <h1>Safety is Everyone Responsibilities!</h1>
+        <p>Learn how to keep yourself and others safe at work.</p>
+    </section>
+
+    <section class="article-list">
+        <div class="article-box">
+            <a href="#">HSE Policy Overview</a>
+        </div>
+        <div class="article-box">
+            <a href="#">Workplace Safety Guidelines</a>
+        </div>
+        <div class="article-box">
+            <a href="#">Emergency Response Procedures</a>
+        </div>
+        <div class="article-box">
+            <a href="#">Personal Protective Equipment (PPE) Usage</a>
+        </div>
+        <div class="article-box">
+            <a href="#">Fire Safety Tips</a>
+        </div>
+        <div class="article-box">
+            <a href="#">First Aid Procedures</a>
+        </div>
+    </section>
+
+    <footer>
+        &copy; 2024 tranos. All rights reserved.
+    </footer>
+
+</body>
+</html>
